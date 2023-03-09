@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { User } from './types/user';
-import { PencilSimple, X } from '@phosphor-icons/react';
+import { PencilSimple, Rows, SquaresFour, X } from '@phosphor-icons/react';
 
 function App() {
   const queryClient = useQueryClient();
   const [users, setUsers] = useState<User[]>([]);
+  const [isGrid, setIsGrid] = useState<boolean>(true);
   const { isLoading, error, data } = useQuery('users', () =>
     fetch('https://gymlink-service.onrender.com/allUsers').then((res) =>
       res.json()
@@ -61,31 +62,53 @@ function App() {
     }
   };
   return (
-    <div className='App max-w-lg mx-auto my-12'>
-      <ul className='flex flex-col gap-2'>
-        <div className='flex gap-2'>
-          <input
-            type='text'
-            placeholder='Search'
-            className='bg-white flex-1 p-2 rounded-md'
-            onChange={handleSearch}
-          />
-          <select className='bg-white p-2 rounded-md'>
-            <option value='all' onClick={() => filterUsers('all')}>
-              All
-            </option>
-            <option value='user' onClick={() => filterUsers('user')}>
-              User
-            </option>
-            <option value='bot' onClick={() => filterUsers('bot')}>
-              Bot
-            </option>
-          </select>
+    <div className={`App ${isGrid ? 'max-w-5xl' : 'max-w-2xl'} mx-auto my-12`}>
+      <div className='flex gap-2 mb-4'>
+        <input
+          type='text'
+          placeholder='Search'
+          className='bg-white flex-1 p-2 rounded-md'
+          onChange={handleSearch}
+        />
+        <select className='bg-white p-2 rounded-md'>
+          <option value='all' onClick={() => filterUsers('all')}>
+            All
+          </option>
+          <option value='user' onClick={() => filterUsers('user')}>
+            User
+          </option>
+          <option value='bot' onClick={() => filterUsers('bot')}>
+            Bot
+          </option>
+        </select>
+        <button
+          className='bg-white p-2 rounded-md'
+          onClick={() => setIsGrid(!isGrid)}
+        >
+          {isGrid ? <SquaresFour size={32} /> : <Rows size={32} />}
+        </button>
+      </div>
+      <div className='grid grid-cols-3 gap-4 mb-4 '>
+        <div className='bg-white p-6 rounded-md'>
+          <h1 className='text-2xl'>Users</h1>
+          <p className='text-gray-500'>{users.length} users</p>
         </div>
+        <div className='bg-white p-6 rounded-md'>
+          <h1 className='text-2xl'>Online</h1>
+          <p className='text-gray-500'>{users.length} users</p>
+        </div>
+        <div className='bg-white p-6 rounded-md'>
+          <h1 className='text-2xl'>Users</h1>
+          <p className='text-gray-500'>{users.length} users</p>
+        </div>
+      </div>
+      <ul className={`${isGrid ? 'grid grid-cols-3' : 'flex flex-col'} gap-2`}>
         {users.map((user: User) => (
           <li
             key={user.id}
-            className='bg-white p-4 rounded-md flex justify-between items-center'
+            className={`bg-white p-4 rounded-md flex justify-between ${
+              isGrid ? 'items-start' : 'items-center'
+            }`}
           >
             <div>
               {user.password && (
@@ -93,21 +116,31 @@ function App() {
                   Bot
                 </p>
               )}
-              <h1>{user.firstName}</h1>
-              <p>{user.email}</p>
+              <div className='flex items-center gap-2'>
+                <div className='overflow-hidden rounded-full w-12 h-12'>
+                  <img
+                    src={user.images[0]}
+                    className='h-full w-full object-cover'
+                  />
+                </div>
+                <div>
+                  <h1>{user.firstName}</h1>
+                  <p>{user.email}</p>
+                </div>
+              </div>
             </div>
-            <div className='h-full flex gap-2'>
+            <div className='flex gap-2'>
               <button
                 className='bg-slate-300 text-white p-2 rounded-full'
                 onClick={() => deleteUser.mutate(user.id)}
               >
-                <PencilSimple size={32} />
+                <PencilSimple size={isGrid ? 16 : 32} />
               </button>
               <button
                 className='bg-red-300 text-white p-2 rounded-full'
                 onClick={() => deleteUser.mutate(user.id)}
               >
-                <X size={32} />
+                <X size={isGrid ? 16 : 32} />
               </button>
             </div>
           </li>
