@@ -94,7 +94,7 @@ function App() {
     <div className='relative min-h-[95vh]'>
       {isModalOpen && (
         <div className='absolute inset-0 bg-black/75 grid place-items-center'>
-          <div className='bg-white rounded-md flex flex-col w-1/5 px-4'>
+          <div className='bg-white rounded-md flex flex-col px-4'>
             <div className='flex justify-between items-center pb-6 py-2'>
               <h3 className='font-bold text-xl'>Edit User</h3>
               <button
@@ -106,7 +106,7 @@ function App() {
             </div>
             <div className='flex flex-col'>
               <div>
-                <div className='overflow-hidden rounded-full w-20 h-20'>
+                <div className='overflow-hidden rounded-full w-20 h-20 mb-4'>
                   <img
                     src={currentUser?.images[0]}
                     className='h-full w-full object-cover'
@@ -129,16 +129,21 @@ function App() {
                       setLastName(e.target.value);
                     }}
                   />
-                  <p className='text-md text-gray-400 font-medium'>
-                    {currentUser?.age}
-                  </p>
                 </div>
+                <p className='text-md text-gray-400 font-medium'>
+                  {currentUser?.age}
+                </p>
                 <p className='text-md text-gray-400 font-medium'>
                   {currentUser?.email}
                 </p>
                 <div className='mt-4 '>
                   <h4 className='text-md text-gray-500 font-medium'>Bio</h4>
-                  <textarea className='bg-slate-100 rounded-md p-2 text-black w-full h-32 text-sm'>
+                  <textarea
+                    className='bg-slate-100 rounded-md p-2 text-black w-full h-32 text-sm'
+                    onChange={(e) => {
+                      setBio(e.target.value);
+                    }}
+                  >
                     {currentUser?.bio}
                   </textarea>
                 </div>
